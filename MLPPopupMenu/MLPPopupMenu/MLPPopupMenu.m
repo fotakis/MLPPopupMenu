@@ -19,15 +19,32 @@
 - (id)initWithDataSource:(id<UITableViewDataSource>)dataSource
       andDelegate:(id<UITableViewDelegate>)delegate
 {
+
+    return [self initWithDataSource:dataSource andDelegate:delegate direction:MLPopupMenuDown widthPadding:kPadding heightPadding:0];
+}
+
+
+- (id)initWithDataSource:(id<UITableViewDataSource>)dataSource
+             andDelegate:(id<UITableViewDelegate>)delegate
+               direction:(MLPopupDirection) direction
+            widthPadding:(NSInteger) widthPadding
+           heightPadding:(NSInteger) heightPadding{
+    
     self = [super initWithFrame:CGRectZero];
     if (self) {
         // Initialization code
         self.scrollEnabled = NO;
         self.dataSource = dataSource;
         self.delegate = delegate;
+        self.direction=direction;
+        self.heightPadding = heightPadding;
+        self.widthPadding=widthPadding;
+        
     }
     return self;
+    
 }
+
 
 - (void)popInWithEvent:(UIEvent*)event
 {
@@ -57,11 +74,12 @@
 
 - (void)popInView:(UIView*)view
 {
-    [self popInView:view andPadding:kPadding];
+    [self popInView:view widthPadding:_widthPadding heightPadding:_heightPadding];
 }
 
-- (void)popInView:(UIView*)view andPadding:(NSInteger)padding
-{
+
+- (void)popInView:(UIView*)view widthPadding:(NSInteger)wpadding heightPadding:(NSInteger) hpadding{
+
     NSAssert(self.dataSource != nil, @"MLPopupMenu data source is required for the control to work");
     
     //Get row height
@@ -71,9 +89,9 @@
     
     //Set frame for menu view
     CGRect frame = view.frame;
-    NSInteger menuHeight = cellSize * numberOfRows;
-    NSInteger menuWidth = frame.size.width - padding;
-    NSInteger menuX = frame.origin.x + padding / 2;
+    NSInteger menuHeight = (cellSize * numberOfRows)+hpadding;
+    NSInteger menuWidth = frame.size.width - wpadding;
+    NSInteger menuX = frame.origin.x + wpadding / 2;
     NSInteger menuY = [view.superview isKindOfClass:[UITabBar class]] ?
                             view.superview.frame.origin.y : frame.origin.y;
     
@@ -104,7 +122,8 @@
     //Animate popup
     [UIView animateWithDuration:0.3
                      animations:^{
-                         self.frame = CGRectApplyAffineTransform(self.frame, CGAffineTransformMakeTranslation(0, (self.direction == MLPopupMenuUp ? -cellSize : cellSize) * numberOfRows));
+                         self.frame = CGRectApplyAffineTransform(self.frame,
+                                                                 CGAffineTransformMakeTranslation(0,(self.direction == MLPopupMenuUp ? -1 : 1) *menuHeight));
                          
                      }
                      completion:^(BOOL finished){
@@ -121,10 +140,11 @@
     CGFloat cellSize = [self rowHeight];
     //Get number of rows
     NSInteger numberOfRows = [self numberOfRowsInSection:0];
+    NSInteger menuHeight = (cellSize * numberOfRows)+_heightPadding;
     //Animate popup
     [UIView animateWithDuration:0.3
                      animations:^{
-                         self.frame = CGRectApplyAffineTransform(self.frame, CGAffineTransformMakeTranslation(0, (self.direction == MLPopupMenuUp ?cellSize : -cellSize) * numberOfRows));
+                         self.frame = CGRectApplyAffineTransform(self.frame, CGAffineTransformMakeTranslation(0, (self.direction == MLPopupMenuUp ?1 : -1) * menuHeight));
                          
                      }
                      completion:^(BOOL finished){

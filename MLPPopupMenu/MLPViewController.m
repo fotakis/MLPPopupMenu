@@ -75,6 +75,7 @@
     if ([self.menuUp isPopped]) {
         [self.menuUp hide];
     }else{
+        NSLog(@"%@",sender);
         [self.menuUp popInView:sender];
     }
 }

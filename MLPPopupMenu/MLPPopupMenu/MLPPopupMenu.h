@@ -18,10 +18,19 @@ typedef enum {
 - (id)initWithDataSource:(id<UITableViewDataSource>)dataSource
         andDelegate:(id<UITableViewDelegate>)delegate;
 
+- (id)initWithDataSource:(id<UITableViewDataSource>)dataSource
+             andDelegate:(id<UITableViewDelegate>)delegate
+direction:(MLPopupDirection) direction
+widthPadding:(NSInteger) widthPadding
+heightPadding:(NSInteger) heightPadding;
+
+
 //Determines if the menu has been popped
 @property (nonatomic, assign) BOOL isPopped;
 //Determines the menu direction up, down
 @property (nonatomic, assign) MLPopupDirection direction;
+@property (nonatomic, assign) NSInteger heightPadding;
+@property (nonatomic, assign) NSInteger widthPadding;
 
 //Pops menu from event touched view. Usually made to work with UIBarButtonItem Events
 - (void)popInWithEvent:(UIEvent*)event;
@@ -33,8 +42,9 @@ typedef enum {
 - (void)popInView:(UIView*)view;
 
 //Pops menu with padding
-- (void)popInView:(UIView*)view andPadding:(NSInteger)padding;
+//- (void)popInView:(UIView*)view andPadding:(NSInteger)padding;
 
+//- (void)popInView:(UIView*)view widthPadding:(NSInteger)padding heightPadding:(NSInteger) heightPadding;
 - (void)hide;
 
 @end
